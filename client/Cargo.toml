@@ -5,4 +5,5 @@ edition = "2021"
 
 [dependencies]
 engine = { path = "engine" }
+render = { package = "render_wgpu", path = "render_wgpu" }
 async-std = "1.12"
