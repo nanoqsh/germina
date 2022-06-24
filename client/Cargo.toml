@@ -7,3 +7,5 @@ edition = "2021"
 engine = { path = "engine" }
 render = { package = "render_wgpu", path = "render_wgpu" }
 async-std = "1.12"
+env_logger = "0.9"
+winit = "0.26"

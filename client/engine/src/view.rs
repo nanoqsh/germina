@@ -1,12 +1,18 @@
-use crate::State;
-use client_core::render::{pass, Mesh, Passes, Render};
+use crate::state::State;
+use client_core::render::Render;
 
-pub struct View<R, M> {
+pub struct View<R>
+where
+    R: Render,
+{
     render: R,
-    meshes: Vec<M>,
+    meshes: Vec<R::Mesh>,
 }
 
-impl<R, M> View<R, M> {
+impl<R> View<R>
+where
+    R: Render,
+{
     pub fn new(render: R) -> Self {
         Self {
             render,
@@ -14,15 +20,20 @@ impl<R, M> View<R, M> {
         }
     }
 
-    pub fn render_state(&mut self, _: &State)
-    where
-        R: Render + Passes,
-        M: Mesh<Render = R>,
-    {
-        let mut frame = self.render.start_frame();
-        let mut solid_pass = frame.pass(pass::Solid);
+    pub fn resize(&mut self, (width, height): (u32, u32)) {
+        use std::num::NonZeroU32;
+
+        self.render.resize((
+            NonZeroU32::new(width).unwrap_or(NonZeroU32::new(1).expect("non zero")),
+            NonZeroU32::new(height).unwrap_or(NonZeroU32::new(1).expect("non zero")),
+        ));
+    }
+
+    pub fn render_state(&mut self, _: &State) {
+        self.render.start_frame();
         for mesh in &self.meshes {
-            solid_pass.draw_mesh(mesh);
+            self.render.draw_mesh(mesh);
         }
+        self.render.end_frame();
     }
 }
