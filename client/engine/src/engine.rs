@@ -1,19 +1,13 @@
 use crate::{state::State, view::View};
-use client_core::render::Render;
+use render::ClientRender as Render;
 
-pub struct Engine<R>
-where
-    R: Render,
-{
+pub struct Engine {
     state: State,
-    view: View<R>,
+    view: View,
 }
 
-impl<R> Engine<R>
-where
-    R: Render,
-{
-    pub fn new(render: R) -> Self {
+impl Engine {
+    pub fn new(render: Render) -> Self {
         Self {
             state: State::new(),
             view: View::new(render),

@@ -1,3 +1,6 @@
-pub mod mesh;
-pub mod render;
-pub mod texture;
+mod mesh;
+mod render;
+mod storage;
+mod texture;
+
+pub use crate::render::*;

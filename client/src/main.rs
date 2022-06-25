@@ -2,7 +2,7 @@ mod scheduler;
 
 use crate::scheduler::Scheduler;
 use engine::Engine;
-use render::render::Render;
+use render::{ClientRender, Render};
 
 fn main() -> ! {
     env_logger::init();
@@ -44,7 +44,7 @@ fn start() -> ! {
 
     let mut engine = {
         let render = async_std::task::block_on(Render::new(window));
-        let mut engine = Engine::new(render);
+        let mut engine = Engine::new(ClientRender::new(render));
         engine.resize_view(WINDOW_SIZE);
         engine
     };

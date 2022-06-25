@@ -1,19 +1,13 @@
 use crate::state::State;
-use client_core::render::Render;
+use render::{ClientRender as Render, Mesh};
 
-pub struct View<R>
-where
-    R: Render,
-{
-    render: R,
-    meshes: Vec<R::Mesh>,
+pub struct View {
+    render: Render,
+    meshes: Vec<Mesh>,
 }
 
-impl<R> View<R>
-where
-    R: Render,
-{
-    pub fn new(render: R) -> Self {
+impl View {
+    pub fn new(render: Render) -> Self {
         Self {
             render,
             meshes: vec![],
@@ -30,10 +24,10 @@ where
     }
 
     pub fn render_state(&mut self, _: &State) {
-        self.render.start_frame();
-        for mesh in &self.meshes {
-            self.render.draw_mesh(mesh);
-        }
-        self.render.end_frame();
+        self.render.draw_frame(|frame| {
+            for mesh in self.meshes.iter().copied() {
+                frame.draw_mesh(mesh);
+            }
+        });
     }
 }

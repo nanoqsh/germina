@@ -4,7 +4,8 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-client_core = { path = "../client_core" }
+bytemuck = { version = "1.9", features = ["derive"] }
+fxhash = "0.2"
 log = "0.4"
 raw-window-handle = "0.4"
 wgpu = "0.12"

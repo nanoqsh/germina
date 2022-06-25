@@ -4,4 +4,4 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-client_core = { path = "../client_core" }
+render = { package = "render_wgpu", path = "../render_wgpu" }

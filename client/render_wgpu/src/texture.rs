@@ -1,1 +1,1 @@
-pub struct Texture {}
+pub struct InternalTexture {}
