@@ -1,10 +1,6 @@
-use crate::{
-    mesh::{Data as MeshData, InternalMesh, Vert},
-    storage::Storage,
-    texture::InternalTexture,
-};
+use crate::{mesh::InternalMesh, storage::Storage, texture::InternalTexture};
+use core_client::render::{MeshData, Size};
 use raw_window_handle::HasRawWindowHandle;
-use std::num::NonZeroU32;
 use wgpu::{
     Device, Queue, RenderPass, RenderPipeline, Surface, SurfaceConfiguration, SurfaceError,
 };
@@ -86,7 +82,7 @@ impl Render {
             vertex: VertexState {
                 module: &shader,
                 entry_point: "vs_main",
-                buffers: &[Vert::layout()],
+                buffers: &[InternalMesh::vert_layout()],
             },
             fragment: Some(FragmentState {
                 module: &shader,
@@ -253,8 +249,6 @@ impl ClientRender {
         self.render.resize(Some(size));
     }
 }
-
-pub type Size = (NonZeroU32, NonZeroU32);
 
 #[derive(Clone, Copy)]
 pub struct Mesh(u32);

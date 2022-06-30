@@ -1,4 +1,4 @@
-use bytemuck::{Pod, Zeroable};
+use core_client::render::{AsBytes, MeshData, Vert};
 use wgpu::{vertex_attr_array, Buffer, Device, VertexAttribute, VertexBufferLayout};
 
 pub struct InternalMesh {
@@ -7,7 +7,7 @@ pub struct InternalMesh {
 }
 
 impl InternalMesh {
-    pub fn new(device: &Device, data: &Data) -> Self {
+    pub fn new(device: &Device, data: &MeshData) -> Self {
         use wgpu::{
             util::{BufferInitDescriptor, DeviceExt},
             BufferUsages,
@@ -15,7 +15,7 @@ impl InternalMesh {
 
         let vertex_buffer = device.create_buffer_init(&BufferInitDescriptor {
             label: Some("vertex buffer"),
-            contents: bytemuck::cast_slice(data.verts),
+            contents: data.verts.as_bytes(),
             usage: BufferUsages::VERTEX,
         });
 
@@ -24,32 +24,17 @@ impl InternalMesh {
             num_vertices: data.verts.len() as u32,
         }
     }
-}
 
-pub struct Data<'a> {
-    pub verts: &'a [Vert],
-    pub faces: &'a [Face],
-}
-
-#[repr(C)]
-#[derive(Copy, Clone, Debug, Pod, Zeroable)]
-pub struct Vert {
-    pub pos: [f32; 3],
-    pub uv: [f32; 2],
-}
-
-impl Vert {
-    const ATTRIBS: [VertexAttribute; 2] = vertex_attr_array![0 => Float32x3, 1 => Float32x2];
-
-    pub fn layout() -> VertexBufferLayout<'static> {
+    pub fn vert_layout() -> VertexBufferLayout<'static> {
+        use std::mem::size_of;
         use wgpu::{BufferAddress, VertexStepMode};
 
+        const ATTRIBS: [VertexAttribute; 2] = vertex_attr_array![0 => Float32x3, 1 => Float32x2];
+
         VertexBufferLayout {
-            array_stride: std::mem::size_of::<Self>() as BufferAddress,
+            array_stride: size_of::<Vert>() as BufferAddress,
             step_mode: VertexStepMode::Vertex,
-            attributes: &Self::ATTRIBS,
+            attributes: &ATTRIBS,
         }
     }
 }
-
-pub type Face = [u16; 3];
