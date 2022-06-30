@@ -5,7 +5,5 @@ impl State {
         Self {}
     }
 
-    pub fn update(&mut self, _: Input) {}
+    pub fn update(&mut self, _: f32) {}
 }
-
-pub struct Input {}

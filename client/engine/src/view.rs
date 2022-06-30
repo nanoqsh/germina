@@ -1,16 +1,53 @@
 use crate::state::State;
-use render::{ClientRender as Render, Mesh};
+use render::{ClientRender as Render, Mesh, Texture};
+
+struct Model {
+    mesh: Mesh,
+    texture: Texture,
+}
 
 pub struct View {
     render: Render,
-    meshes: Vec<Mesh>,
+    models: Vec<Model>,
 }
 
 impl View {
-    pub fn new(render: Render) -> Self {
+    pub fn new(mut render: Render) -> Self {
+        use core_client::render::{MeshData, TextureData, Vert};
+        use image::GenericImageView;
+
+        let mesh = render.make_mesh(MeshData {
+            verts: &[
+                Vert {
+                    pos: [-0.5, -0.5, 0.],
+                    tex: [0., 1.],
+                },
+                Vert {
+                    pos: [-0.5, 0.5, 0.],
+                    tex: [0., 0.],
+                },
+                Vert {
+                    pos: [0.5, 0.5, 0.],
+                    tex: [1., 0.],
+                },
+                Vert {
+                    pos: [0.5, -0.5, 0.],
+                    tex: [1., 1.],
+                },
+            ],
+            faces: &[[0, 2, 1], [0, 3, 2]],
+        });
+
+        let raw_image = include_bytes!("../texture.png");
+        let image = image::load_from_memory(raw_image).expect("load image");
+        let texture = render.make_texture(TextureData {
+            bytes: &image.to_rgba8(),
+            size: image.dimensions(),
+        });
+
         Self {
             render,
-            meshes: vec![],
+            models: vec![Model { mesh, texture }],
         }
     }
 
@@ -25,8 +62,9 @@ impl View {
 
     pub fn render_state(&mut self, _: &State) {
         self.render.draw_frame(|frame| {
-            for mesh in self.meshes.iter().copied() {
-                frame.draw_mesh(mesh);
+            for model in &self.models {
+                frame.bind_texture(model.texture);
+                frame.draw_mesh(model.mesh);
             }
         });
     }

@@ -45,7 +45,7 @@ fn start() -> ! {
     let mut engine = {
         let render = async_std::task::block_on(Render::new(window));
         let mut engine = Engine::new(ClientRender::new(render));
-        engine.resize_view(WINDOW_SIZE);
+        engine.resize(WINDOW_SIZE);
         engine
     };
 
@@ -56,12 +56,11 @@ fn start() -> ! {
             | WindowEvent::ScaleFactorChanged {
                 new_inner_size: &mut size,
                 ..
-            } => engine.resize_view(size.into()),
+            } => engine.resize(size.into()),
             _ => {}
         },
         Event::MainEventsCleared => {
-            // Render
-            engine.draw_view();
+            engine.update();
 
             // Process reports of ready tasks
             for report in scheduler.ready() {

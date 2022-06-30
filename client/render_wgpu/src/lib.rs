@@ -3,4 +3,4 @@ mod render;
 mod storage;
 mod texture;
 
-pub use crate::render::*;
+pub use crate::render::{ClientRender, Frame, Mesh, Render, Texture};

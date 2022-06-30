@@ -12,7 +12,7 @@ pub struct MeshData<'a> {
 #[derive(Copy, Clone, Debug, Pod, Zeroable)]
 pub struct Vert {
     pub pos: [f32; 3],
-    pub uv: [f32; 2],
+    pub tex: [f32; 2],
 }
 
 impl AsBytes for [Vert] {
@@ -22,6 +22,17 @@ impl AsBytes for [Vert] {
 }
 
 pub type Face = [u16; 3];
+
+impl AsBytes for [Face] {
+    fn as_bytes(&self) -> &[u8] {
+        bytemuck::cast_slice(self)
+    }
+}
+
+pub struct TextureData<'a> {
+    pub bytes: &'a [u8],
+    pub size: (u32, u32),
+}
 
 pub trait AsBytes {
     fn as_bytes(&self) -> &[u8];
