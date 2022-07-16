@@ -25,6 +25,12 @@ enum Command {
     Pack {
         /// The source directory
         src: String,
+        /// The box's name
+        #[clap(short, long)]
+        name: Option<String>,
+        /// Sets the flag whether to rewrite an old file
+        #[clap(short, long)]
+        rewrite: bool,
     },
 }
 
@@ -38,9 +44,19 @@ fn main() {
 fn run(command: Command) -> Result<(), Error> {
     match command {
         Command::Info { path } => todo!("{path:?}"),
-        Command::Pack { src } => {
+        Command::Pack { src, name, rewrite } => {
+            use pack::Options;
+
             let path = PathBuf::from(src);
-            pack::pack(&path).map_err(|err| Error::Pack { err, path })?;
+            let arch_path = pack::pack(
+                &path,
+                Options {
+                    name: name.as_deref(),
+                    rewrite,
+                },
+            )
+            .map_err(|err| Error::Pack { err, path })?;
+            println!("written in {}", arch_path.display());
         }
     }
 
