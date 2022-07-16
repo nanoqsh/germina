@@ -3,4 +3,5 @@ members = [
     "base",
     "client",
     "server",
+    "tools/germina-pack",
 ]
