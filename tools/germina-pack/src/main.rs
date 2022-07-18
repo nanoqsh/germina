@@ -8,7 +8,6 @@ use std::path::PathBuf;
 
 #[derive(Parser)]
 #[clap(author, version, about)]
-#[clap(propagate_version = true)]
 struct Cli {
     #[clap(subcommand)]
     command: Command,
@@ -43,7 +42,11 @@ fn main() {
 
 fn run(command: Command) -> Result<(), Error> {
     match command {
-        Command::Info { path } => todo!("{path:?}"),
+        Command::Info { path } => {
+            let path = PathBuf::from(path);
+            let info = info::info(&path).map_err(|err| Error::Info { err, path })?;
+            println!("{info}");
+        }
         Command::Pack { src, name, rewrite } => {
             use pack::Options;
 

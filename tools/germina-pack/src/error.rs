@@ -1,4 +1,4 @@
-use crate::pack;
+use crate::{info, pack};
 use std::{
     fmt,
     io::{self, Stderr, Write},
@@ -7,6 +7,7 @@ use std::{
 
 pub enum Error {
     Pack { err: pack::Error, path: PathBuf },
+    Info { err: info::Error, path: PathBuf },
 }
 
 impl Error {
@@ -15,6 +16,11 @@ impl Error {
 
         match self {
             Self::Pack { err, path } => {
+                report.print(&path.display());
+                report.print(&"\n");
+                report.print(&err);
+            }
+            Self::Info { err, path } => {
                 report.print(&path.display());
                 report.print(&"\n");
                 report.print(&err);

@@ -45,7 +45,7 @@ pub fn pack(path: &Path, options: Options) -> Result<PathBuf, Error> {
         };
 
         arch.start_file(entry.arch_path, options)?;
-        arch.write(&buf)?;
+        arch.write_all(&buf)?;
         Ok(())
     })?;
 
@@ -117,6 +117,7 @@ pub enum Error {
     PermissionDenied,
     InvalidFileName(PathBuf),
     Arch(&'static str),
+    Other,
 }
 
 impl From<io::Error> for Error {
@@ -124,7 +125,7 @@ impl From<io::Error> for Error {
         match err.kind() {
             ErrorKind::NotFound => Self::NotFound,
             ErrorKind::PermissionDenied => Self::PermissionDenied,
-            err => panic!("err: {err:?}"),
+            _ => Self::Other,
         }
     }
 }
@@ -150,6 +151,7 @@ impl fmt::Display for Error {
             Self::PermissionDenied => write!(f, "permission denied"),
             Self::InvalidFileName(path) => write!(f, "invalid file name: {}", path.display()),
             Self::Arch(arch) => write!(f, "archive error: {}", arch),
+            Self::Other => write!(f, "unknown file handling error"),
         }
     }
 }

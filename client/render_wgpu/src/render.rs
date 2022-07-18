@@ -66,7 +66,7 @@ impl Render {
 
         let surface_config = SurfaceConfiguration {
             usage: TextureUsages::RENDER_ATTACHMENT,
-            format: surface.get_preferred_format(&adapter).unwrap(),
+            format: surface.get_supported_formats(&adapter)[0],
             width: 0,
             height: 0,
             present_mode: PresentMode::Fifo,
@@ -74,7 +74,7 @@ impl Render {
 
         let shader = connection
             .device
-            .create_shader_module(&ShaderModuleDescriptor {
+            .create_shader_module(ShaderModuleDescriptor {
                 label: Some("shader"),
                 source: ShaderSource::Wgsl(include_str!("../shaders/def.wgsl").into()),
             });
@@ -125,11 +125,11 @@ impl Render {
                 fragment: Some(FragmentState {
                     module: &shader,
                     entry_point: "fs_main",
-                    targets: &[ColorTargetState {
+                    targets: &[Some(ColorTargetState {
                         format: surface_config.format,
                         blend: Some(BlendState::REPLACE),
                         write_mask: ColorWrites::ALL,
-                    }],
+                    })],
                 }),
                 primitive: PrimitiveState {
                     topology: PrimitiveTopology::TriangleList,
@@ -201,7 +201,7 @@ impl Render {
         {
             let mut pass = encoder.begin_render_pass(&RenderPassDescriptor {
                 label: Some("render pass"),
-                color_attachments: &[RenderPassColorAttachment {
+                color_attachments: &[Some(RenderPassColorAttachment {
                     view: &view,
                     resolve_target: None,
                     ops: Operations {
@@ -213,7 +213,7 @@ impl Render {
                         }),
                         store: true,
                     },
-                }],
+                })],
                 depth_stencil_attachment: None,
             });
 
@@ -248,7 +248,7 @@ pub struct Frame<'d> {
 impl<'d> Frame<'d> {
     pub fn bind_texture(&mut self, texture: Texture) {
         let texture = self.resources.textures.get(texture.0);
-        self.pass.set_bind_group(0, &texture.bind_group(), &[]);
+        self.pass.set_bind_group(0, texture.bind_group(), &[]);
     }
 
     pub fn draw_mesh(&mut self, mesh: Mesh) {
