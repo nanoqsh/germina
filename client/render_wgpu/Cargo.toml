@@ -8,4 +8,4 @@ core_client = { path = "../core_client" }
 fxhash = "0.2"
 log = "0.4"
 raw-window-handle = "0.4"
-wgpu = "0.13"
+wgpu = "0.12"

@@ -248,7 +248,7 @@ pub struct Frame<'d> {
 impl<'d> Frame<'d> {
     pub fn bind_texture(&mut self, texture: Texture) {
         let texture = self.resources.textures.get(texture.0);
-        self.pass.set_bind_group(0, &texture.bind_group(), &[]);
+        self.pass.set_bind_group(0, texture.bind_group(), &[]);
     }
 
     pub fn draw_mesh(&mut self, mesh: Mesh) {
