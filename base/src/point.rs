@@ -2,7 +2,7 @@ mod chunk;
 mod cluster;
 mod global;
 
-pub use self::{
+pub use crate::point::{
     chunk::Point as ChunkPoint, cluster::Point as ClusterPoint, global::Point as GlobalPoint,
 };
 use std::{error, fmt, num::TryFromIntError};

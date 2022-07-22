@@ -2,20 +2,23 @@ use crate::{
     geometry::{MeshData, Vert},
     side::Side,
 };
+use serde::Deserialize;
+use std::fmt;
 
-#[derive(Copy, Clone)]
+#[derive(Deserialize, Copy, Clone)]
+#[serde(try_from = "u8")]
 pub enum Shape {
     S0 = 0,
 }
 
 impl Shape {
-    pub fn from_id(id: u8) -> Option<Self> {
+    pub fn from_id(id: u8) -> Result<Self, ShapeIdError> {
         let shape = match id {
             0 => Self::S0,
-            _ => return None,
+            _ => return Err(ShapeIdError(())),
         };
 
-        Some(shape)
+        Ok(shape)
     }
 
     pub fn data(self) -> &'static [Data] {
@@ -48,6 +51,22 @@ impl Shape {
         match self {
             Self::S0 => &[S0],
         }
+    }
+}
+
+impl TryFrom<u8> for Shape {
+    type Error = ShapeIdError;
+
+    fn try_from(value: u8) -> Result<Self, Self::Error> {
+        Self::from_id(value)
+    }
+}
+
+pub struct ShapeIdError(());
+
+impl fmt::Display for ShapeIdError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "wrong shape id")
     }
 }
 
