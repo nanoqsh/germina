@@ -1,5 +1,5 @@
 use crate::render::Connection;
-use core_client::render::TextureData;
+use base::geometry::TextureData;
 use wgpu::{BindGroup, BindGroupLayout};
 
 pub struct Texture {

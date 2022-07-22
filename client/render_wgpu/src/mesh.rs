@@ -1,5 +1,5 @@
 use crate::render::Connection;
-use core_client::render::{AsBytes, MeshData, Vert};
+use base::geometry::{AsBytes, MeshData, Vert};
 use wgpu::{vertex_attr_array, Buffer, VertexAttribute, VertexBufferLayout};
 
 pub struct Mesh {
