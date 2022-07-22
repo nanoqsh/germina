@@ -1,5 +1,5 @@
 use crate::{mesh::Mesh as InternalMesh, storage::Storage, texture::Texture as InternalTexture};
-use core_client::render::{MeshData, Size, TextureData};
+use base::geometry::{MeshData, Size, TextureData};
 use raw_window_handle::HasRawWindowHandle;
 use wgpu::{
     BindGroupLayout, Device, Queue, RenderPass, RenderPipeline, Surface, SurfaceConfiguration,

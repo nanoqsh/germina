@@ -13,7 +13,7 @@ pub struct View {
 
 impl View {
     pub fn new(mut render: Render) -> Self {
-        use core_client::render::{MeshData, TextureData, Vert};
+        use base::geometry::{MeshData, TextureData, Vert};
         use image::GenericImageView;
 
         let mesh = render.make_mesh(MeshData {
