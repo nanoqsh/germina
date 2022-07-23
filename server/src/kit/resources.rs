@@ -89,10 +89,6 @@ impl<A> Resources<A> {
     pub fn get(&self, key: &str) -> Option<&A> {
         self.map.get(key)
     }
-
-    pub fn into_inner(self) -> Map<Key, A> {
-        self.map
-    }
 }
 
 impl<A> Default for Resources<A> {

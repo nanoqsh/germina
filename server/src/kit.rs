@@ -25,6 +25,8 @@ impl Kit {
 
         let file = File::open(path)?;
         let mut arch = ZipArchive::new(file).expect("read archive");
+        let mut content = String::with_capacity(128);
+
         for i in 0..arch.len() {
             let mut file = arch.by_index(i)?;
             if !file.is_file() {
@@ -45,9 +47,9 @@ impl Kit {
                     name,
                     kind: Kind::Tile,
                 } => {
-                    let mut content = String::with_capacity(64);
+                    content.clear();
                     file.read_to_string(&mut content).expect("read");
-                    let tile = toml::from_str(&content).expect("read toml");
+                    let tile = json::from_str(&content).expect("read json");
                     model.tiles.insert(name, tile);
                 }
             }
@@ -72,7 +74,7 @@ impl Asset {
             _ => return None,
         };
 
-        if ext != "toml" {
+        if ext != "json" {
             return None;
         }
 

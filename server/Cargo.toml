@@ -7,6 +7,6 @@ edition = "2021"
 base = { path = "../base" }
 clap = "3.2"
 fxhash = "0.2"
+json = { package = "json5", version = "0.4" }
 serde = { version = "1.0", features = ["derive"] }
-toml = "0.5"
 zip = "0.6"

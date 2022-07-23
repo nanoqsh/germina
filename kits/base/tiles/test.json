@@ -1,0 +1,22 @@
+{
+    layout: [
+        [null, null],
+        [null, 'b0'],
+    ],
+    blocks: {
+        b0: {
+            shape: {
+                id: 0,
+                sprites: [
+                    null,
+                    's0',
+                    {
+                        name: 's1',
+                        offset: [0.5, 0.5],
+                        discard: true,
+                    },
+                ]
+            }
+        }
+    }
+}

@@ -5,7 +5,7 @@ use crate::{
 use serde::Deserialize;
 use std::fmt;
 
-#[derive(Deserialize, Copy, Clone)]
+#[derive(Debug, Deserialize, Copy, Clone)]
 #[serde(try_from = "u8")]
 pub enum Shape {
     S0 = 0,

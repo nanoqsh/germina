@@ -60,7 +60,7 @@ fn list_files<F>(path: &Path, mut on_entry: F) -> Result<(), Error>
 where
     F: FnMut(Entry) -> Result<(), Error>,
 {
-    const PACK_EXTENSIONS: [&str; 2] = ["toml", "png"];
+    const PACK_EXTENSIONS: [&str; 2] = ["json", "png"];
 
     fn visit_dirs<F>(path: &Path, on_file: &mut F) -> Result<(), Error>
     where
