@@ -16,11 +16,11 @@ pub fn pack(path: &Path, options: Options) -> Result<PathBuf, Error> {
         let name = options
             .name
             .or_else(|| path.file_name().and_then(|name| name.to_str()))
-            .ok_or(Error::BoxNameNotSet)?;
+            .ok_or(Error::KitNameNotSet)?;
 
         let mut path = env::current_dir()?;
         path.push(name);
-        path.set_extension("box");
+        path.set_extension("kit");
 
         if !options.rewrite && path.exists() {
             return Err(Error::AlreadyExists(path));
@@ -111,12 +111,12 @@ struct Entry<'a> {
 
 pub enum Error {
     NothingToWrite,
-    BoxNameNotSet,
+    KitNameNotSet,
     AlreadyExists(PathBuf),
-    NotFound,
-    PermissionDenied,
     InvalidFileName(PathBuf),
     Arch(&'static str),
+    NotFound,
+    PermissionDenied,
     Other,
 }
 
@@ -145,13 +145,13 @@ impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
             Self::NothingToWrite => write!(f, "nothing to write"),
-            Self::BoxNameNotSet => write!(f, "box name not set"),
+            Self::KitNameNotSet => write!(f, "a kit name not set"),
             Self::AlreadyExists(path) => write!(f, "already exists: {}", path.display()),
-            Self::NotFound => write!(f, "not found"),
-            Self::PermissionDenied => write!(f, "permission denied"),
             Self::InvalidFileName(path) => write!(f, "invalid file name: {}", path.display()),
             Self::Arch(arch) => write!(f, "archive error: {}", arch),
             Self::Other => write!(f, "unknown file handling error"),
+            Self::NotFound => write!(f, "file not found"),
+            Self::PermissionDenied => write!(f, "permission denied"),
         }
     }
 }

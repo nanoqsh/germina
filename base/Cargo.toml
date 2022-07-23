@@ -6,3 +6,4 @@ edition = "2021"
 [dependencies]
 bytemuck = { version = "1.9", features = ["derive"] }
 image = { version = "0.24", default-features = false, features = ["png"] }
+serde = { version = "1.0", features = ["derive"] }

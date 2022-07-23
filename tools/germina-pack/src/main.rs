@@ -15,16 +15,16 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Command {
-    /// Shows a box info
+    /// Shows a kit info
     Info {
-        /// The box's path
+        /// The kit's path
         path: String,
     },
-    /// Pack a box from source
+    /// Pack a kit from source
     Pack {
         /// The source directory
         src: String,
-        /// The box's name
+        /// The kit's name
         #[clap(short, long)]
         name: Option<String>,
         /// Sets the flag whether to rewrite an old file

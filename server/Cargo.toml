@@ -4,4 +4,9 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+base = { path = "../base" }
 clap = "3.2"
+fxhash = "0.2"
+serde = { version = "1.0", features = ["derive"] }
+toml = "0.5"
+zip = "0.6"
