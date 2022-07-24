@@ -1,6 +1,6 @@
 use fxhash::FxHashMap as Map;
 use serde::Deserialize;
-use std::{borrow, fmt, ops};
+use std::{borrow, fmt, ops, str};
 
 #[derive(Deserialize, Hash, PartialEq, Eq)]
 #[serde(try_from = "String")]
@@ -9,7 +9,7 @@ pub struct Key {
 }
 
 impl Key {
-    pub fn from_str<S>(src: S) -> Result<Self, ParseError>
+    fn from_str<S>(src: S) -> Result<Self, ParseError>
     where
         S: Into<String>,
     {
@@ -38,6 +38,14 @@ impl TryFrom<String> for Key {
 
     fn try_from(value: String) -> Result<Self, Self::Error> {
         Self::from_str(value)
+    }
+}
+
+impl str::FromStr for Key {
+    type Err = ParseError;
+
+    fn from_str(src: &str) -> Result<Self, Self::Err> {
+        Self::from_str(src)
     }
 }
 

@@ -6,7 +6,10 @@ edition = "2021"
 [dependencies]
 base = { path = "../base" }
 clap = "3.2"
+crossterm = "0.24"
+env_logger = "0.9"
 fxhash = "0.2"
 json = { package = "json5", version = "0.4" }
+log = "0.4"
 serde = { version = "1.0", features = ["derive"] }
 zip = "0.6"

@@ -120,16 +120,6 @@ pub enum Error {
     Other,
 }
 
-impl From<io::Error> for Error {
-    fn from(err: io::Error) -> Self {
-        match err.kind() {
-            ErrorKind::NotFound => Self::NotFound,
-            ErrorKind::PermissionDenied => Self::PermissionDenied,
-            _ => Self::Other,
-        }
-    }
-}
-
 impl From<ZipError> for Error {
     fn from(err: ZipError) -> Self {
         match err {
@@ -141,6 +131,16 @@ impl From<ZipError> for Error {
     }
 }
 
+impl From<io::Error> for Error {
+    fn from(err: io::Error) -> Self {
+        match err.kind() {
+            ErrorKind::NotFound => Self::NotFound,
+            ErrorKind::PermissionDenied => Self::PermissionDenied,
+            _ => Self::Other,
+        }
+    }
+}
+
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
@@ -148,7 +148,7 @@ impl fmt::Display for Error {
             Self::KitNameNotSet => write!(f, "a kit name not set"),
             Self::AlreadyExists(path) => write!(f, "already exists: {}", path.display()),
             Self::InvalidFileName(path) => write!(f, "invalid file name: {}", path.display()),
-            Self::Arch(arch) => write!(f, "archive error: {}", arch),
+            Self::Arch(arch) => write!(f, "archive error: {arch}"),
             Self::Other => write!(f, "unknown file handling error"),
             Self::NotFound => write!(f, "file not found"),
             Self::PermissionDenied => write!(f, "permission denied"),

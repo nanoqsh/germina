@@ -1,7 +1,7 @@
 use crate::point::Error;
 use std::fmt;
 
-#[derive(Copy, Clone, Eq, Hash, PartialEq)]
+#[derive(Clone, Copy, Eq, Hash, PartialEq)]
 pub struct Point {
     x: i8,
     y: i8,

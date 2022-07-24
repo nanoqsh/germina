@@ -1,9 +1,8 @@
-use crate::{info, pack};
+use crate::load;
 use std::path::PathBuf;
 
 pub enum Error {
-    Pack { err: pack::Error, path: PathBuf },
-    Info { err: info::Error, path: PathBuf },
+    Load { err: load::Error, path: PathBuf },
 }
 
 impl Error {
@@ -12,14 +11,7 @@ impl Error {
 
         eprintln!("{}", "error:".red().bold());
         match self {
-            Self::Pack { err, path } => {
-                eprintln!(
-                    "in file {}",
-                    StyledContent::new(Default::default(), path.display()).bold()
-                );
-                eprint!("{err}");
-            }
-            Self::Info { err, path } => {
+            Self::Load { err, path } => {
                 eprintln!(
                     "in file {}",
                     StyledContent::new(Default::default(), path.display()).bold()

@@ -9,7 +9,7 @@ pub struct MeshData<'a> {
 }
 
 #[repr(C)]
-#[derive(Copy, Clone, Debug, Pod, Zeroable)]
+#[derive(Clone, Copy, Debug, Pod, Zeroable)]
 pub struct Vert {
     pub pos: [f32; 3],
     pub tex: [f32; 2],

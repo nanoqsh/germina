@@ -1,6 +1,6 @@
 use std::{fmt, ops};
 
-#[derive(Debug, Copy, Clone, Eq, Hash, PartialEq)]
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 pub enum Side {
     Left = 0,
     Right = 1,
@@ -51,7 +51,7 @@ where
     }
 }
 
-#[derive(Default, Copy, Clone, Eq, Hash, PartialEq)]
+#[derive(Clone, Copy, Default, Eq, Hash, PartialEq)]
 pub struct Sides(u8);
 
 impl Sides {

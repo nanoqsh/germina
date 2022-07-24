@@ -44,14 +44,15 @@ fn run(command: Command) -> Result<(), Error> {
     match command {
         Command::Info { path } => {
             let path = PathBuf::from(path);
-            let info = info::info(&path).map_err(|err| Error::Info { err, path })?;
+            let info = crate::info::info(&path).map_err(|err| Error::Info { err, path })?;
             println!("{info}");
         }
         Command::Pack { src, name, rewrite } => {
-            use pack::Options;
+            use crate::pack::Options;
+            use crossterm::style::Stylize;
 
             let path = PathBuf::from(src);
-            let arch_path = pack::pack(
+            let arch_path = crate::pack::pack(
                 &path,
                 Options {
                     name: name.as_deref(),
@@ -59,7 +60,9 @@ fn run(command: Command) -> Result<(), Error> {
                 },
             )
             .map_err(|err| Error::Pack { err, path })?;
-            println!("written in {}", arch_path.display());
+
+            let filename = arch_path.file_name().expect("filename").to_string_lossy();
+            println!("a kit saved in {}", filename.bold());
         }
     }
 

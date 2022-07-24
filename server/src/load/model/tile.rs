@@ -1,5 +1,4 @@
-use crate::kit::Key;
-use base::shape::Shape as ShapeId;
+use base::{kit::Key, shape::Shape as ShapeId};
 use fxhash::FxHashMap as Map;
 use serde::Deserialize;
 
