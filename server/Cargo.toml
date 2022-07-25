@@ -2,10 +2,12 @@
 name = "server"
 version = "0.1.0"
 edition = "2021"
+authors = ["nano <nanoqsh@gmail.com>"]
+description = "Germina Server"
 
 [dependencies]
 base = { path = "../base" }
-clap = "3.2"
+clap = { version = "3.2", features = ["derive"] }
 crossterm = "0.24"
 env_logger = "0.9"
 fxhash = "0.2"

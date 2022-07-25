@@ -4,7 +4,6 @@ mod pack;
 
 use crate::error::Error;
 use clap::{Parser, Subcommand};
-use std::path::PathBuf;
 
 #[derive(Parser)]
 #[clap(author, version, about)]
@@ -35,24 +34,25 @@ enum Command {
 
 fn main() {
     let cli = Cli::parse();
-    if let Err(err) = run(cli.command) {
+    if let Err(err) = run(cli) {
         err.exit()
     }
 }
 
-fn run(command: Command) -> Result<(), Error> {
-    match command {
+fn run(cli: Cli) -> Result<(), Error> {
+    use crate::pack::Options;
+    use crossterm::style::Stylize;
+    use std::path::PathBuf;
+
+    match cli.command {
         Command::Info { path } => {
             let path = PathBuf::from(path);
-            let info = crate::info::info(&path).map_err(|err| Error::Info { err, path })?;
+            let info = info::info(&path).map_err(|err| Error::Info { err, path })?;
             println!("{info}");
         }
         Command::Pack { src, name, rewrite } => {
-            use crate::pack::Options;
-            use crossterm::style::Stylize;
-
             let path = PathBuf::from(src);
-            let arch_path = crate::pack::pack(
+            let arch_path = pack::pack(
                 &path,
                 Options {
                     name: name.as_deref(),

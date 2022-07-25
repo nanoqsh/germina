@@ -10,7 +10,7 @@ impl Error {
     pub fn exit(self) -> ! {
         use crossterm::style::{StyledContent, Stylize};
 
-        eprintln!("{}", "error:".red().bold());
+        eprint!("{} ", "error:".red().bold());
         match self {
             Self::Pack { err, path } => {
                 eprintln!(

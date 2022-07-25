@@ -1,21 +1,16 @@
 {
-    layout: [
-        [null, null],
-        [null, 'b0'],
-    ],
+    layout: ['b0', 'b1'],
     blocks: {
         b0: {
             shape: {
                 id: 0,
-                sprites: [
-                    null,
-                    's0',
-                    {
-                        name: 's1',
-                        offset: [0.5, 0.5],
-                        discard: true,
-                    },
-                ]
+                sprites: ['box', 'bricks']
+            }
+        },
+        b1: {
+            shape: {
+                id: 0,
+                sprites: ['dirt', 'stone']
             }
         }
     }

@@ -8,6 +8,40 @@ pub struct Tile {
     pub blocks: Map<Key, Block>,
 }
 
+impl Tile {
+    pub fn sprites<F>(&self, mut callback: F)
+    where
+        F: FnMut(&Key),
+    {
+        let mut block = |bl: &Block| {
+            let mut sprite = |ptr: &_| {
+                if let SpritePointer::Key(key) | SpritePointer::Sprite { name: key, .. } = ptr {
+                    callback(key);
+                }
+            };
+
+            match &bl.shape.sprites {
+                Sprites::Single(ptr) => sprite(ptr),
+                Sprites::Multiple(v) => v.iter().for_each(sprite),
+            }
+        };
+
+        match &self.layout {
+            Layout::D1(ptr) => {
+                ptr.block().map(&mut block);
+            }
+            Layout::D2(v) => v.iter().for_each(|ptr| {
+                ptr.block().map(&mut block);
+            }),
+            Layout::D3(v) => v.iter().flatten().for_each(|ptr| {
+                ptr.block().map(&mut block);
+            }),
+        }
+
+        self.blocks.values().for_each(&mut block)
+    }
+}
+
 #[derive(Deserialize)]
 #[serde(untagged)]
 pub enum Layout {
@@ -22,6 +56,15 @@ pub enum BlockPointer {
     None,
     Key(Key),
     Block(Block),
+}
+
+impl BlockPointer {
+    fn block(&self) -> Option<&Block> {
+        match self {
+            Self::Block(block) => Some(block),
+            _ => None,
+        }
+    }
 }
 
 #[derive(Deserialize)]

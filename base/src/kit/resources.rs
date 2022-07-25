@@ -1,11 +1,11 @@
 use fxhash::FxHashMap as Map;
 use serde::Deserialize;
-use std::{borrow, fmt, ops, str};
+use std::{borrow, fmt, ops, rc::Rc, str};
 
-#[derive(Deserialize, Hash, PartialEq, Eq)]
+#[derive(Clone, Deserialize, Hash, PartialEq, Eq)]
 #[serde(try_from = "String")]
 pub struct Key {
-    inner: Box<str>,
+    inner: Rc<str>,
 }
 
 impl Key {
@@ -94,8 +94,26 @@ impl<A> Resources<A> {
         }
     }
 
+    pub fn try_insert<F, E>(&mut self, key: Key, callback: F) -> Result<(), E>
+    where
+        F: FnOnce(&Key) -> Result<A, E>,
+    {
+        use std::collections::hash_map::Entry;
+
+        if let Entry::Vacant(en) = self.map.entry(key) {
+            let value = callback(en.key())?;
+            en.insert(value);
+        }
+
+        Ok(())
+    }
+
     pub fn get(&self, key: &str) -> Option<&A> {
         self.map.get(key)
+    }
+
+    pub fn iter(&self) -> impl Iterator<Item = (&Key, &A)> {
+        self.map.iter()
     }
 }
 

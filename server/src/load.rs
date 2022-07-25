@@ -1,22 +1,33 @@
 mod model;
 
-use crate::load::model::Model;
-use base::kit::{Asset, Kind};
+use crate::{
+    error::{IoError, JsonError},
+    load::model::Model,
+};
+use base::kit::{Asset, Key, Kind, ParseKeyError};
 use std::{
     fmt,
     io::{self, Read},
-    path::Path,
+    path::{Path, PathBuf},
 };
 use zip::{result::ZipError, ZipArchive};
 
-#[derive(Default)]
-pub struct Kit {
+pub struct KitSource {
+    pub name: Key,
     pub model: Model,
 }
 
-impl Kit {
+impl KitSource {
     pub fn load(path: &Path) -> Result<Self, Error> {
         use std::{fs::File, mem};
+
+        let name = path
+            .file_name()
+            .and_then(|name| name.to_str())
+            .and_then(|name| name.rsplit_once('.'))
+            .ok_or(Error::UndefinedName)?
+            .0
+            .parse()?;
 
         let mut model = Model::default();
 
@@ -31,7 +42,7 @@ impl Kit {
             }
 
             let filename = file.name();
-            let asset = match Asset::parse_path(filename) {
+            let Asset { name, kind } = match Asset::parse_path(filename) {
                 Some(asset) => asset,
                 None => {
                     let kitname = path.file_name().expect("filename");
@@ -40,37 +51,77 @@ impl Kit {
                 }
             };
 
-            match asset {
-                Asset {
-                    name,
-                    kind: Kind::Tile,
-                } => {
+            match kind {
+                Kind::Tile => {
                     content.clear();
                     file.read_to_string(&mut content)?;
-                    let tile = json::from_str(&content).map_err(|err| Error::Json {
+                    let tile = json::from_str(&content).map_err(|err| JsonError {
                         err,
                         src: mem::take(&mut content),
-                        filename: file.name().into(),
+                        filename: Some(file.name().into()),
                     })?;
                     model.tiles.insert(name, tile);
                 }
             }
         }
 
-        Ok(Self { model })
+        let mut path_buf = String::with_capacity(32);
+        let mut tile_sprites = Vec::with_capacity(32);
+        for (_, tile) in model.tiles.iter() {
+            tile.sprites(|key| tile_sprites.push(key.clone()));
+        }
+
+        for sprite_key in tile_sprites {
+            model
+                .tile_sprites
+                .try_insert::<_, Error>(sprite_key, |key| {
+                    path_buf.clear();
+                    path_buf.push_str("sprites/tiles/");
+                    path_buf.push_str(key);
+                    path_buf.push_str(".png");
+
+                    let mut file = arch.by_name(&path_buf).map_err(|err| match err {
+                        ZipError::FileNotFound => Error::Io(IoError {
+                            err: io::ErrorKind::NotFound.into(),
+                            path: Some(PathBuf::from(&path_buf)),
+                        }),
+                        err => err.into(),
+                    })?;
+
+                    let mut buf = Vec::with_capacity(128);
+                    file.read_to_end(&mut buf)?;
+                    Ok(buf)
+                })?;
+        }
+
+        Ok(Self { name, model })
     }
 }
 
 pub enum Error {
+    UndefinedName,
+    ParseKey(ParseKeyError),
+    Io(IoError),
+    Json(JsonError),
     Arch(&'static str),
-    Json {
-        err: json::Error,
-        src: String,
-        filename: String,
-    },
-    NotFound,
-    PermissionDenied,
-    Other,
+}
+
+impl From<ParseKeyError> for Error {
+    fn from(err: ParseKeyError) -> Self {
+        Self::ParseKey(err)
+    }
+}
+
+impl From<io::Error> for Error {
+    fn from(err: io::Error) -> Self {
+        Self::Io(IoError { err, path: None })
+    }
+}
+
+impl From<JsonError> for Error {
+    fn from(err: JsonError) -> Self {
+        Self::Json(err)
+    }
 }
 
 impl From<ZipError> for Error {
@@ -79,65 +130,19 @@ impl From<ZipError> for Error {
             ZipError::Io(err) => err.into(),
             ZipError::InvalidArchive(arch) => Self::Arch(arch),
             ZipError::UnsupportedArchive(arch) => Self::Arch(arch),
-            ZipError::FileNotFound => Self::NotFound,
-        }
-    }
-}
-
-impl From<io::Error> for Error {
-    fn from(err: io::Error) -> Self {
-        use io::ErrorKind;
-
-        match err.kind() {
-            ErrorKind::NotFound => Self::NotFound,
-            ErrorKind::PermissionDenied => Self::PermissionDenied,
-            _ => Self::Other,
+            ZipError::FileNotFound => Self::Arch("file not found"),
         }
     }
 }
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        use crossterm::style::Stylize;
-
         match self {
+            Self::UndefinedName => write!(f, "kit name is undefined"),
+            Self::ParseKey(err) => write!(f, "failed parse a key: {err}"),
+            Self::Io(io) => write!(f, "{io}"),
+            Self::Json(json) => write!(f, "{json}"),
             Self::Arch(arch) => write!(f, "archive error: {arch}"),
-            Self::Json {
-                err: json::Error::Message { msg, location },
-                src,
-                filename,
-            } => {
-                const SHOW_LINES: usize = 3;
-
-                write!(f, "while parsing {}", filename.as_str().bold())?;
-
-                match location {
-                    Some(location) => {
-                        let n_line = location.line + 1;
-                        writeln!(f, " at line {}:", n_line)?;
-
-                        let start = n_line.saturating_sub(SHOW_LINES);
-                        for line in src.lines().skip(start).take(n_line.min(SHOW_LINES)) {
-                            writeln!(f, "{line}")?;
-                        }
-
-                        let column = location.column;
-                        writeln!(f, "{:>column$}{}", "", '^'.yellow().bold())?;
-                    }
-                    None => writeln!(f, ":")?,
-                }
-
-                // Trim pest error format
-                let msg = msg
-                    .rsplit_once('=')
-                    .map(|(_, right)| right.trim())
-                    .unwrap_or(msg);
-
-                write!(f, "{msg}")
-            }
-            Self::NotFound => write!(f, "file not found"),
-            Self::PermissionDenied => write!(f, "permission denied"),
-            Self::Other => write!(f, "unknown file handling error"),
         }
     }
 }
