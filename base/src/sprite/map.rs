@@ -1,5 +1,7 @@
-use crate::sprite::{pack::Packed, Rect};
-use image::{GenericImage, GenericImageView, RgbaImage as Image, SubImage};
+use {
+    crate::sprite::{pack::Packed, Rect},
+    image::{GenericImage, GenericImageView, RgbaImage as Image, SubImage},
+};
 
 pub struct Map {
     pub rects: Vec<Rect>,
@@ -7,7 +9,6 @@ pub struct Map {
 }
 
 impl Map {
-    #[must_use]
     pub fn new(images: &[SubImage<&Image>]) -> Self {
         use std::iter::zip;
 

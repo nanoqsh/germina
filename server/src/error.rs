@@ -1,5 +1,7 @@
-use crate::{config, load};
-use std::{fmt, io, path::PathBuf};
+use {
+    crate::{config, load},
+    std::{fmt, io, path::PathBuf},
+};
 
 pub enum Error {
     Config { err: config::Error, path: PathBuf },
@@ -39,8 +41,10 @@ pub struct IoError {
 
 impl fmt::Display for IoError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        use crossterm::style::{StyledContent, Stylize};
-        use io::ErrorKind;
+        use {
+            crossterm::style::{StyledContent, Stylize},
+            io::ErrorKind,
+        };
 
         let path = self
             .path

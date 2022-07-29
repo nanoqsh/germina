@@ -1,6 +1,8 @@
-use fxhash::FxHashMap as Map;
-use serde::Deserialize;
-use std::{borrow, fmt, ops, rc::Rc, str};
+use {
+    fxhash::FxHashMap as Map,
+    serde::Deserialize,
+    std::{borrow, fmt, ops, rc::Rc, str},
+};
 
 #[derive(Clone, Deserialize, Hash, PartialEq, Eq)]
 #[serde(try_from = "String")]

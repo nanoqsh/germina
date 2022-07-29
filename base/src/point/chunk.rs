@@ -1,47 +1,39 @@
-use crate::{chunk::point::InnerPoint, point::Error, side::Side};
 use std::fmt;
 
 #[derive(Clone, Copy, Eq, Hash, PartialEq)]
-pub struct Point(InnerPoint);
+pub struct Point {
+    x: i8,
+    y: i8,
+    z: i8,
+}
 
 impl Point {
-    pub fn new(x: u8, y: u8, z: u8) -> Result<Self, Error> {
-        InnerPoint::new(x, y, z).map(Self).ok_or(Error)
-    }
-
-    /// Steps to `side` `n` times.
-    ///
-    /// If it stops in the current chunk bounds, returns `Ok`.
-    /// If it goes to the next chunk, returns `Err`.
-    ///
-    /// # Panics
-    ///
-    /// Panics if `n` is not in chunk bounds.
-    pub fn to(self, side: Side, n: u8) -> Result<Self, Self> {
-        self.0.to(side, n).map(Self).map_err(Self)
-    }
-
-    pub(crate) fn into_inner(self) -> InnerPoint {
-        self.0
+    pub const fn new(x: i8, y: i8, z: i8) -> Option<Self> {
+        if x != i8::MIN && y != i8::MIN && z != i8::MIN {
+            Some(Self { x, y, z })
+        } else {
+            None
+        }
     }
 }
 
-impl From<Point> for (u8, u8, u8) {
-    fn from(point: Point) -> Self {
-        point.0.into()
+impl From<Point> for (i8, i8, i8) {
+    fn from(Point { x, y, z }: Point) -> Self {
+        (x, y, z)
     }
 }
 
-impl TryFrom<(u8, u8, u8)> for Point {
-    type Error = Error;
+impl TryFrom<(i8, i8, i8)> for Point {
+    type Error = ();
 
-    fn try_from((x, y, z): (u8, u8, u8)) -> Result<Self, Self::Error> {
-        Self::new(x, y, z)
+    fn try_from((x, y, z): (i8, i8, i8)) -> Result<Self, Self::Error> {
+        Self::new(x, y, z).ok_or(())
     }
 }
 
 impl fmt::Debug for Point {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        self.0.fmt(f)
+        let (x, y, z) = (*self).into();
+        write!(f, "[{x}, {y}, {z}]")
     }
 }

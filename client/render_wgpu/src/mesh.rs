@@ -1,6 +1,8 @@
-use crate::render::Connection;
-use base::geometry::{AsBytes, MeshData, Vert};
-use wgpu::{vertex_attr_array, Buffer, VertexAttribute, VertexBufferLayout};
+use {
+    crate::render::Connection,
+    base::graphics::{AsBytes, MeshData, Vert},
+    wgpu::{vertex_attr_array, Buffer, VertexAttribute, VertexBufferLayout},
+};
 
 pub struct Mesh {
     vertex_buffer: Buffer,

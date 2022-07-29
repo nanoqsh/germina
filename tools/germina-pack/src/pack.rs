@@ -1,10 +1,12 @@
-use std::{
-    env, fmt,
-    fs::{self, File},
-    io::{self, BufWriter, ErrorKind, Read, Write},
-    path::{Path, PathBuf},
+use {
+    std::{
+        env, fmt,
+        fs::{self, File},
+        io::{self, BufWriter, ErrorKind, Read, Write},
+        path::{Path, PathBuf},
+    },
+    zip::result::ZipError,
 };
-use zip::result::ZipError;
 
 pub struct Options<'a> {
     pub name: Option<&'a str>,

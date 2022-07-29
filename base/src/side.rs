@@ -11,7 +11,6 @@ pub enum Side {
 }
 
 impl Side {
-    #[must_use]
     pub const fn opposite(self) -> Self {
         match self {
             Self::Left => Self::Right,
@@ -57,27 +56,22 @@ pub struct Sides(u8);
 impl Sides {
     const ALL: Self = Self(0b0011_1111);
 
-    #[must_use]
     pub const fn empty() -> Self {
         Self(0)
     }
 
-    #[must_use]
     pub const fn all() -> Self {
         Self::ALL
     }
 
-    #[must_use]
     pub const fn len(self) -> usize {
         self.0.count_ones() as usize
     }
 
-    #[must_use]
     pub const fn is_empty(self) -> bool {
         self.0 == 0
     }
 
-    #[must_use]
     pub fn contains(self, side: Side) -> bool {
         let sides: Self = side.into();
         self.0 & sides.0 != 0

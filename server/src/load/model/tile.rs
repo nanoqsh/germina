@@ -1,6 +1,8 @@
-use base::{kit::Key, shape::Shape as ShapeId};
-use fxhash::FxHashMap as Map;
-use serde::Deserialize;
+use {
+    base::{kit::Key, shape::Shape as ShapeId},
+    fxhash::FxHashMap as Map,
+    serde::Deserialize,
+};
 
 #[derive(Deserialize)]
 pub struct Tile {

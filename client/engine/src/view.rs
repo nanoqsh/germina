@@ -1,5 +1,7 @@
-use crate::state::State;
-use render::{ClientRender as Render, Mesh, Texture};
+use {
+    crate::state::State,
+    render::{ClientRender as Render, Mesh, Texture},
+};
 
 struct Model {
     mesh: Mesh,
@@ -13,7 +15,7 @@ pub struct View {
 
 impl View {
     pub fn new(mut render: Render) -> Self {
-        use base::geometry::{MeshData, TextureData, Vert};
+        use base::graphics::{MeshData, TextureData, Vert};
         use image::GenericImageView;
 
         let mesh = render.make_mesh(MeshData {

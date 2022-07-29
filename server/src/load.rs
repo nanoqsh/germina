@@ -1,16 +1,16 @@
 mod model;
 
-use crate::{
-    error::{IoError, JsonError},
-    load::model::Model,
+use {
+    self::model::Model,
+    crate::error::{IoError, JsonError},
+    base::kit::{Asset, Key, Kind, ParseKeyError},
+    std::{
+        fmt,
+        io::{self, Read},
+        path::{Path, PathBuf},
+    },
+    zip::{result::ZipError, ZipArchive},
 };
-use base::kit::{Asset, Key, Kind, ParseKeyError};
-use std::{
-    fmt,
-    io::{self, Read},
-    path::{Path, PathBuf},
-};
-use zip::{result::ZipError, ZipArchive};
 
 pub struct KitSource {
     pub name: Key,

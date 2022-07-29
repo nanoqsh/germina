@@ -1,7 +1,7 @@
-use fxhash::FxHashMap as HashMap;
+use fxhash::FxHashMap as Map;
 
 pub struct Storage<T> {
-    map: HashMap<u32, T>,
+    map: Map<u32, T>,
     counter: u32,
 }
 
@@ -25,7 +25,7 @@ impl<T> Storage<T> {
 impl<T> Default for Storage<T> {
     fn default() -> Self {
         Self {
-            map: HashMap::default(),
+            map: Map::default(),
             counter: 0,
         }
     }

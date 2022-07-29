@@ -1,7 +1,7 @@
 mod asset;
 mod resources;
 
-pub use crate::kit::{
+pub use self::{
     asset::{Asset, Kind},
     resources::{Key, ParseError as ParseKeyError, Resources},
 };

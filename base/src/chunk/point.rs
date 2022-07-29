@@ -1,5 +1,7 @@
-use crate::{chunk, side::Side};
-use std::fmt;
+use {
+    crate::{chunk, side::Side},
+    std::fmt,
+};
 
 const WIDTH: u8 = chunk::WIDTH as u8;
 const HEIGHT: u8 = chunk::HEIGHT as u8;

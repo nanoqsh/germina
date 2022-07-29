@@ -1,5 +1,7 @@
-use crate::sprite::Rect;
-use std::{cmp::Eq, collections::HashMap, hash::Hash};
+use {
+    crate::sprite::Rect,
+    std::{cmp::Eq, collections::HashMap, hash::Hash},
+};
 
 pub(super) struct Packed<K> {
     pub frames: HashMap<K, Rect>,

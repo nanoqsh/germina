@@ -1,8 +1,10 @@
 mod scheduler;
 
-use crate::scheduler::Scheduler;
-use engine::Engine;
-use render::{ClientRender, Render};
+use {
+    crate::scheduler::Scheduler,
+    engine::Engine,
+    render::{ClientRender, Render},
+};
 
 fn main() -> ! {
     env_logger::init();

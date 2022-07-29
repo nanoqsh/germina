@@ -2,8 +2,10 @@ mod error;
 mod info;
 mod pack;
 
-use crate::error::Error;
-use clap::{Parser, Subcommand};
+use {
+    crate::error::Error,
+    clap::{Parser, Subcommand},
+};
 
 #[derive(Parser)]
 #[clap(author, version, about)]
@@ -40,9 +42,7 @@ fn main() {
 }
 
 fn run(cli: Cli) -> Result<(), Error> {
-    use crate::pack::Options;
-    use crossterm::style::Stylize;
-    use std::path::PathBuf;
+    use {crate::pack::Options, crossterm::style::Stylize, std::path::PathBuf};
 
     match cli.command {
         Command::Info { path } => {

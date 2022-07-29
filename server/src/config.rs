@@ -1,6 +1,8 @@
-use crate::error::JsonError;
-use serde::Deserialize;
-use std::{fmt, io, path::Path};
+use {
+    crate::error::JsonError,
+    serde::Deserialize,
+    std::{fmt, io, path::Path},
+};
 
 #[derive(Deserialize)]
 pub struct Config {

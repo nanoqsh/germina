@@ -1,5 +1,4 @@
-use crate::chunk::layout::Layout;
-use std::marker::PhantomData;
+use {crate::chunk::layout::Layout, std::marker::PhantomData};
 
 pub struct Data<T, L, const N: usize> {
     inner: [T; N],

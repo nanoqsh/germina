@@ -1,5 +1,7 @@
-use crate::{info, pack};
-use std::path::PathBuf;
+use {
+    crate::{info, pack},
+    std::path::PathBuf,
+};
 
 pub enum Error {
     Pack { err: pack::Error, path: PathBuf },

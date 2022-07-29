@@ -1,9 +1,11 @@
-use crate::{
-    geometry::{MeshData, Vert},
-    side::Side,
+use {
+    crate::{
+        graphics::{MeshData, Vert},
+        side::Side,
+    },
+    serde::Deserialize,
+    std::fmt,
 };
-use serde::Deserialize;
-use std::fmt;
 
 #[derive(Clone, Copy, Debug, Deserialize)]
 #[serde(try_from = "u8")]

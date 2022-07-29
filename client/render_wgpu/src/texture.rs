@@ -1,6 +1,8 @@
-use crate::render::Connection;
-use base::geometry::TextureData;
-use wgpu::{BindGroup, BindGroupLayout};
+use {
+    crate::render::Connection,
+    base::graphics::TextureData,
+    wgpu::{BindGroup, BindGroupLayout},
+};
 
 pub struct Texture {
     bind_group: BindGroup,
@@ -8,12 +10,14 @@ pub struct Texture {
 
 impl Texture {
     pub fn new(connection: &Connection, layout: &BindGroupLayout, data: TextureData) -> Self {
-        use std::num::NonZeroU32;
-        use wgpu::{
-            AddressMode, BindGroupDescriptor, BindGroupEntry, BindingResource, Extent3d,
-            FilterMode, ImageCopyTexture, ImageDataLayout, Origin3d, SamplerDescriptor,
-            TextureAspect, TextureDescriptor, TextureDimension, TextureFormat, TextureUsages,
-            TextureViewDescriptor,
+        use {
+            std::num::NonZeroU32,
+            wgpu::{
+                AddressMode, BindGroupDescriptor, BindGroupEntry, BindingResource, Extent3d,
+                FilterMode, ImageCopyTexture, ImageDataLayout, Origin3d, SamplerDescriptor,
+                TextureAspect, TextureDescriptor, TextureDimension, TextureFormat, TextureUsages,
+                TextureViewDescriptor,
+            },
         };
 
         let (width, height) = data.size;

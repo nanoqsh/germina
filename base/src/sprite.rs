@@ -1,7 +1,7 @@
 mod map;
 mod pack;
 
-pub use crate::sprite::map::Map;
+pub use self::map::Map;
 
 #[derive(Clone, Copy, Default)]
 pub struct Rect {

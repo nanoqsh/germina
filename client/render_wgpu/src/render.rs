@@ -1,9 +1,11 @@
-use crate::{mesh::Mesh as InternalMesh, storage::Storage, texture::Texture as InternalTexture};
-use base::geometry::{MeshData, Size, TextureData};
-use raw_window_handle::HasRawWindowHandle;
-use wgpu::{
-    BindGroupLayout, Device, Queue, RenderPass, RenderPipeline, Surface, SurfaceConfiguration,
-    SurfaceError,
+use {
+    crate::{mesh::Mesh as InternalMesh, storage::Storage, texture::Texture as InternalTexture},
+    base::graphics::{MeshData, Size, TextureData},
+    raw_window_handle::HasRawWindowHandle,
+    wgpu::{
+        BindGroupLayout, Device, Queue, RenderPass, RenderPipeline, Surface, SurfaceConfiguration,
+        SurfaceError,
+    },
 };
 
 pub struct Render {

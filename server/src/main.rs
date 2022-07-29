@@ -2,8 +2,10 @@ mod config;
 mod error;
 mod load;
 
-use crate::{config::Config, error::Error, load::KitSource};
-use clap::{Parser, Subcommand};
+use {
+    crate::{config::Config, error::Error, load::KitSource},
+    clap::{Parser, Subcommand},
+};
 
 #[derive(Parser)]
 #[clap(author, version, about)]

@@ -2,15 +2,15 @@ mod data;
 pub mod layout;
 pub(super) mod point;
 
-use crate::{
-    chunk::{
+use {
+    self::{
         data::Data,
         layout::{Layout, Straight},
         point::InnerPoint,
     },
-    point::ChunkPoint,
+    crate::point::BlockPoint,
+    std::ops,
 };
-use std::ops;
 
 const fn boundary(size: u32) -> u32 {
     assert!(0 < size && size <= u8::MAX as u32);
@@ -63,16 +63,16 @@ impl<T, L> Chunk<T, L> {
     }
 }
 
-impl<T> ops::Index<ChunkPoint> for Chunk<T> {
+impl<T> ops::Index<BlockPoint> for Chunk<T> {
     type Output = T;
 
-    fn index(&self, point: ChunkPoint) -> &Self::Output {
+    fn index(&self, point: BlockPoint) -> &Self::Output {
         self.get(point.into_inner())
     }
 }
 
-impl<T> ops::IndexMut<ChunkPoint> for Chunk<T> {
-    fn index_mut(&mut self, point: ChunkPoint) -> &mut Self::Output {
+impl<T> ops::IndexMut<BlockPoint> for Chunk<T> {
+    fn index_mut(&mut self, point: BlockPoint) -> &mut Self::Output {
         self.get_mut(point.into_inner())
     }
 }

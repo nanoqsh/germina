@@ -1,6 +1,8 @@
-use crate::{state::State, view::View};
-use render::ClientRender as Render;
-use std::time::Instant;
+use {
+    crate::{state::State, view::View},
+    render::ClientRender as Render,
+    std::time::Instant,
+};
 
 pub struct Engine {
     state: State,

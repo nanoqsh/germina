@@ -1,5 +1,7 @@
-use bytemuck::{Pod, Zeroable};
-use std::num::NonZeroU32;
+use {
+    bytemuck::{Pod, Zeroable},
+    std::num::NonZeroU32,
+};
 
 pub type Size = (NonZeroU32, NonZeroU32);
 

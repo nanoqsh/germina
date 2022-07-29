@@ -1,35 +1,42 @@
-use crate::{
-    chunk::{DEPTH, HEIGHT, WIDTH},
-    point::{ChunkPoint, ClusterPoint, Error},
+use {
+    crate::{
+        chunk::{DEPTH, HEIGHT, WIDTH},
+        point::{BlockPoint, ChunkPoint},
+    },
+    std::fmt,
 };
-use std::fmt;
 
 #[derive(Clone, Copy, Eq, Hash, PartialEq)]
 pub struct Point {
+    bl: BlockPoint,
     ch: ChunkPoint,
-    cl: ClusterPoint,
 }
 
 impl Point {
-    pub const fn new(ch: ChunkPoint, cl: ClusterPoint) -> Self {
-        Self { ch, cl }
+    pub const fn new(bl: BlockPoint, ch: ChunkPoint) -> Self {
+        Self { bl, ch }
     }
 
-    pub fn from_absolute(x: i32, y: i32, z: i32) -> Result<Self, Error> {
-        let cl = ClusterPoint::new(
-            x.div_euclid(WIDTH as i32).try_into()?,
-            y.div_euclid(HEIGHT as i32).try_into()?,
-            z.div_euclid(DEPTH as i32).try_into()?,
+    pub fn from_absolute(x: i32, y: i32, z: i32) -> Option<Self> {
+        let ch = ChunkPoint::new(
+            x.div_euclid(WIDTH as i32).try_into().ok()?,
+            y.div_euclid(HEIGHT as i32).try_into().ok()?,
+            z.div_euclid(DEPTH as i32).try_into().ok()?,
         )?;
 
-        let ch = ChunkPoint::new(
+        let bl = BlockPoint::new(
             x.rem_euclid(WIDTH as i32) as u8,
             y.rem_euclid(HEIGHT as i32) as u8,
             z.rem_euclid(DEPTH as i32) as u8,
         )
         .expect("cast");
 
-        Ok(Self::new(ch, cl))
+        Some(Self::new(bl, ch))
+    }
+
+    // TODO: Private
+    pub const fn block_point(self) -> BlockPoint {
+        self.bl
     }
 
     // TODO: Private
@@ -37,19 +44,14 @@ impl Point {
         self.ch
     }
 
-    // TODO: Private
-    pub const fn cluster_point(self) -> ClusterPoint {
-        self.cl
-    }
-
     pub fn absolute(self) -> (i32, i32, i32) {
+        let (blx, bly, blz) = self.bl.into();
         let (chx, chy, chz) = self.ch.into();
-        let (clx, cly, clz) = self.cl.into();
 
         (
-            i32::from(clx) * WIDTH as i32 + i32::from(chx),
-            i32::from(cly) * HEIGHT as i32 + i32::from(chy),
-            i32::from(clz) * DEPTH as i32 + i32::from(chz),
+            i32::from(chx) * WIDTH as i32 + i32::from(blx),
+            i32::from(chy) * HEIGHT as i32 + i32::from(bly),
+            i32::from(chz) * DEPTH as i32 + i32::from(blz),
         )
     }
 }
