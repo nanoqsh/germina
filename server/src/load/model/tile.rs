@@ -40,7 +40,7 @@ impl Tile {
             }),
         }
 
-        self.blocks.values().for_each(&mut block)
+        self.blocks.values().for_each(&mut block);
     }
 }
 

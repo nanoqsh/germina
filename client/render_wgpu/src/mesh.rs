@@ -32,18 +32,20 @@ impl Mesh {
         Self {
             vertex_buffer,
             index_buffer,
-            num_indices: data.faces.len() as u32 * 3,
+            num_indices: u32::try_from(data.faces.len()).expect("cast") * 3,
         }
     }
 
-    pub fn layout() -> VertexBufferLayout<'static> {
-        use std::mem::size_of;
-        use wgpu::{BufferAddress, VertexStepMode};
+    pub const fn layout() -> VertexBufferLayout<'static> {
+        use {
+            std::mem,
+            wgpu::{BufferAddress, VertexStepMode},
+        };
 
         const ATTRIBS: [VertexAttribute; 2] = vertex_attr_array![0 => Float32x3, 1 => Float32x2];
 
         VertexBufferLayout {
-            array_stride: size_of::<Vert>() as BufferAddress,
+            array_stride: mem::size_of::<Vert>() as BufferAddress,
             step_mode: VertexStepMode::Vertex,
             attributes: &ATTRIBS,
         }

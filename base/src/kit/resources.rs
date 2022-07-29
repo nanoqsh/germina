@@ -91,9 +91,7 @@ pub struct Resources<A> {
 
 impl<A> Resources<A> {
     pub fn insert(&mut self, key: Key, value: A) {
-        if self.map.insert(key, value).is_some() {
-            panic!("already has a key");
-        }
+        assert!(self.map.insert(key, value).is_none(), "already has a key");
     }
 
     pub fn try_insert<F, E>(&mut self, key: Key, callback: F) -> Result<(), E>

@@ -14,7 +14,7 @@ fn main() -> ! {
 fn start() -> ! {
     use winit::{
         dpi::PhysicalSize,
-        event::*,
+        event::{Event, WindowEvent},
         event_loop::{ControlFlow, EventLoop},
         window::WindowBuilder,
     };
@@ -67,7 +67,7 @@ fn start() -> ! {
             // Process reports of ready tasks
             for report in scheduler.ready() {
                 let id = report.id;
-                let value: &i32 = report.value.downcast_ref().unwrap();
+                let value: &i32 = report.value.downcast_ref().expect("downcast");
                 println!("{id:?}: {value}");
             }
         }

@@ -8,6 +8,7 @@ use {
     zip::result::ZipError,
 };
 
+#[derive(Clone, Copy)]
 pub struct Options<'a> {
     pub name: Option<&'a str>,
     pub rewrite: bool,
@@ -15,9 +16,11 @@ pub struct Options<'a> {
 
 pub fn pack(path: &Path, options: Options) -> Result<PathBuf, Error> {
     let create_arch = || -> Result<_, Error> {
+        use std::ffi::OsStr;
+
         let name = options
             .name
-            .or_else(|| path.file_name().and_then(|name| name.to_str()))
+            .or_else(|| path.file_name().and_then(OsStr::to_str))
             .ok_or(Error::KitNameNotSet)?;
 
         let mut path = env::current_dir()?;
@@ -126,8 +129,7 @@ impl From<ZipError> for Error {
     fn from(err: ZipError) -> Self {
         match err {
             ZipError::Io(err) => err.into(),
-            ZipError::InvalidArchive(arch) => Self::Arch(arch),
-            ZipError::UnsupportedArchive(arch) => Self::Arch(arch),
+            ZipError::InvalidArchive(arch) | ZipError::UnsupportedArchive(arch) => Self::Arch(arch),
             ZipError::FileNotFound => Self::NotFound,
         }
     }

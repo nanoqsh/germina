@@ -4,6 +4,7 @@ use {
     self::model::Model,
     crate::error::{IoError, JsonError},
     base::kit::{Asset, Key, Kind, ParseKeyError},
+    fxhash::FxHashSet as Set,
     std::{
         fmt,
         io::{self, Read},
@@ -19,11 +20,11 @@ pub struct KitSource {
 
 impl KitSource {
     pub fn load(path: &Path) -> Result<Self, Error> {
-        use std::{fs::File, mem};
+        use std::{ffi::OsStr, fs::File, mem};
 
         let name = path
             .file_name()
-            .and_then(|name| name.to_str())
+            .and_then(OsStr::to_str)
             .and_then(|name| name.rsplit_once('.'))
             .ok_or(Error::UndefinedName)?
             .0
@@ -66,9 +67,11 @@ impl KitSource {
         }
 
         let mut path_buf = String::with_capacity(32);
-        let mut tile_sprites = Vec::with_capacity(32);
+        let mut tile_sprites = Set::default();
         for (_, tile) in model.tiles.iter() {
-            tile.sprites(|key| tile_sprites.push(key.clone()));
+            tile.sprites(|key| {
+                tile_sprites.insert(key.clone());
+            });
         }
 
         for sprite_key in tile_sprites {
@@ -128,8 +131,7 @@ impl From<ZipError> for Error {
     fn from(err: ZipError) -> Self {
         match err {
             ZipError::Io(err) => err.into(),
-            ZipError::InvalidArchive(arch) => Self::Arch(arch),
-            ZipError::UnsupportedArchive(arch) => Self::Arch(arch),
+            ZipError::InvalidArchive(arch) | ZipError::UnsupportedArchive(arch) => Self::Arch(arch),
             ZipError::FileNotFound => Self::Arch("file not found"),
         }
     }

@@ -10,21 +10,21 @@ pub enum Error {
 
 impl Error {
     pub fn exit(self) -> ! {
-        use crossterm::style::{StyledContent, Stylize};
+        use crossterm::style::{ContentStyle, StyledContent, Stylize};
 
         eprint!("{} ", "error:".red().bold());
         match self {
             Self::Config { err, path } => {
                 eprintln!(
                     "in file {}",
-                    StyledContent::new(Default::default(), path.display()).bold()
+                    StyledContent::new(ContentStyle::default(), path.display()).bold()
                 );
                 eprint!("{err}");
             }
             Self::Load { err, path } => {
                 eprintln!(
                     "in file {}",
-                    StyledContent::new(Default::default(), path.display()).bold()
+                    StyledContent::new(ContentStyle::default(), path.display()).bold()
                 );
                 eprint!("{err}");
             }
@@ -42,14 +42,14 @@ pub struct IoError {
 impl fmt::Display for IoError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         use {
-            crossterm::style::{StyledContent, Stylize},
+            crossterm::style::{ContentStyle, StyledContent, Stylize},
             io::ErrorKind,
         };
 
         let path = self
             .path
             .as_ref()
-            .map(|path| StyledContent::new(Default::default(), path.display()).bold());
+            .map(|path| StyledContent::new(ContentStyle::default(), path.display()).bold());
 
         match self.err.kind() {
             ErrorKind::NotFound => match path {
@@ -110,8 +110,7 @@ impl fmt::Display for JsonError {
         // Trim pest error format
         let msg = msg
             .rsplit_once('=')
-            .map(|(_, right)| right.trim())
-            .unwrap_or(msg);
+            .map_or_else(|| msg.as_str(), |(_, right)| right.trim());
 
         write!(f, "{msg}")
     }

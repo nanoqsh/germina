@@ -9,7 +9,7 @@ impl<T, L, const N: usize> Data<T, L, N>
 where
     L: Layout,
 {
-    pub fn new(val: T) -> Self
+    pub const fn new(val: T) -> Self
     where
         T: Copy,
     {

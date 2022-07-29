@@ -5,7 +5,7 @@ use std::{
 };
 
 pub fn info(path: &Path) -> Result<Info, Error> {
-    let _ = fs::read_to_string(path)?;
+    let _todo = fs::read_to_string(path)?;
     Ok(Info {})
 }
 

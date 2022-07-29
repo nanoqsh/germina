@@ -14,7 +14,7 @@ const DEPTH: u8 = chunk::DEPTH as u8;
 /// Since the some `unsafe` code relies on this invariant, violation of it
 /// results an undefined behavior.
 #[derive(Clone, Copy, Eq, Hash, PartialEq)]
-pub(crate) struct InnerPoint {
+pub struct InnerPoint {
     x: u8,
     y: u8,
     z: u8,

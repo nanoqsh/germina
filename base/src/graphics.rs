@@ -31,6 +31,7 @@ impl AsBytes for [Face] {
     }
 }
 
+#[derive(Clone, Copy)]
 pub struct TextureData<'a> {
     pub bytes: &'a [u8],
     pub size: (u32, u32),

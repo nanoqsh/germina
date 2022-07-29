@@ -14,7 +14,7 @@ pub enum Shape {
 }
 
 impl Shape {
-    pub fn from_id(id: u8) -> Result<Self, ShapeIdError> {
+    pub const fn from_id(id: u8) -> Result<Self, ShapeIdError> {
         let shape = match id {
             0 => Self::S0,
             _ => return Err(ShapeIdError(())),
@@ -23,7 +23,7 @@ impl Shape {
         Ok(shape)
     }
 
-    pub fn data(self) -> &'static [Data] {
+    pub const fn data(self) -> &'static [Data] {
         const S0: Data = Data {
             // TODO: Add faces
             mesh: MeshData {
