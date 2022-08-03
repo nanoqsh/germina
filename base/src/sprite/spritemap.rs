@@ -3,12 +3,12 @@ use {
     image::{GenericImage, GenericImageView, RgbaImage as Image, SubImage},
 };
 
-pub struct Map {
+pub struct SpriteMap {
     pub rects: Vec<Rect>,
     pub image: Image,
 }
 
-impl Map {
+impl SpriteMap {
     pub fn new(images: &[SubImage<&Image>]) -> Self {
         use std::iter::zip;
 

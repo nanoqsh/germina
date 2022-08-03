@@ -1,7 +1,7 @@
-mod map;
 mod pack;
+mod spritemap;
 
-pub use self::map::Map;
+pub use self::spritemap::SpriteMap;
 
 #[derive(Clone, Copy, Default)]
 pub struct Rect {

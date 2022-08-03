@@ -1,11 +1,11 @@
 use {
-    crate::{chunk, side::Side},
+    crate::{chunk::size, side::Side},
     std::fmt,
 };
 
-const WIDTH: u8 = chunk::WIDTH as u8;
-const HEIGHT: u8 = chunk::HEIGHT as u8;
-const DEPTH: u8 = chunk::DEPTH as u8;
+const WIDTH: u8 = size::WIDTH as u8;
+const HEIGHT: u8 = size::HEIGHT as u8;
+const DEPTH: u8 = size::DEPTH as u8;
 
 /// A chunk point.
 ///

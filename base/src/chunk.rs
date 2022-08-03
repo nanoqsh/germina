@@ -1,6 +1,6 @@
 mod data;
 pub mod layout;
-pub(super) mod point;
+pub(crate) mod point;
 
 use {
     self::{
@@ -12,20 +12,22 @@ use {
     std::ops,
 };
 
-const fn boundary(size: u32) -> u32 {
-    assert!(0 < size && size <= u8::MAX as u32);
-    size
+pub mod size {
+    const fn boundary(size: u32) -> u32 {
+        assert!(0 < size && size <= u8::MAX as u32);
+        size
+    }
+
+    pub const WIDTH: u32 = boundary(16);
+    pub const HEIGHT: u32 = boundary(32);
+    pub const DEPTH: u32 = boundary(16);
 }
 
-pub const WIDTH: u32 = boundary(16);
-pub const HEIGHT: u32 = boundary(32);
-pub const DEPTH: u32 = boundary(16);
-
-pub struct Chunk<T, L = Straight<WIDTH, HEIGHT>> {
-    data: Data<T, L, { (WIDTH * HEIGHT * DEPTH) as usize }>,
+pub struct ChunkData<T, L = Straight<{ size::WIDTH }, { size::HEIGHT }>> {
+    data: Data<T, L, { ({ size::WIDTH } * { size::HEIGHT } * { size::DEPTH }) as usize }>,
 }
 
-impl<T, L> Chunk<T, L> {
+impl<T, L> ChunkData<T, L> {
     pub fn new(val: T) -> Self
     where
         T: Copy,
@@ -63,7 +65,10 @@ impl<T, L> Chunk<T, L> {
     }
 }
 
-impl<T> ops::Index<BlockPoint> for Chunk<T> {
+impl<T, L> ops::Index<BlockPoint> for ChunkData<T, L>
+where
+    L: Layout,
+{
     type Output = T;
 
     fn index(&self, point: BlockPoint) -> &Self::Output {
@@ -71,7 +76,10 @@ impl<T> ops::Index<BlockPoint> for Chunk<T> {
     }
 }
 
-impl<T> ops::IndexMut<BlockPoint> for Chunk<T> {
+impl<T, L> ops::IndexMut<BlockPoint> for ChunkData<T, L>
+where
+    L: Layout,
+{
     fn index_mut(&mut self, point: BlockPoint) -> &mut Self::Output {
         self.get_mut(point.into_inner())
     }

@@ -1,7 +1,7 @@
 mod block;
 mod chunk;
-mod world;
+mod in_cluster;
 
 pub use self::{
-    block::Point as BlockPoint, chunk::Point as ChunkPoint, world::Point as WorldPoint,
+    block::Point as BlockPoint, chunk::Point as ChunkPoint, in_cluster::Point as WorldPoint,
 };

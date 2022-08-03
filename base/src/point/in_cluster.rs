@@ -1,6 +1,6 @@
 use {
     crate::{
-        chunk::{DEPTH, HEIGHT, WIDTH},
+        chunk::size::*,
         point::{BlockPoint, ChunkPoint},
     },
     std::fmt,
